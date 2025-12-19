@@ -20,55 +20,15 @@ type Servidor struct {
 }
 
 func main() {
-	http.HandleFunc("/", paginaPrincipal)
+	http.HandleFunc("/", mostrarFormulario)
 	http.HandleFunc("/analizar", analizarDominio)
 
 	fmt.Println("Servidor iniciado en http://localhost:8080")
 	http.ListenAndServe(":8080", nil)
 }
 
-func paginaPrincipal(w http.ResponseWriter, r *http.Request) {
-	html := `
-	<!DOCTYPE html>
-	<html>
-	<head>
-		<meta charset="UTF-8">
-		<title>Analizador TLS</title>
-		<style>
-			body {
-				font-family: Arial, sans-serif;
-				background-color: #f4f4f4;
-				padding: 40px;
-			}
-			.contenedor {
-				background: white;
-				padding: 20px;
-				max-width: 500px;
-				margin: auto;
-				border-radius: 5px;
-			}
-			input {
-				width: 100%;
-				padding: 8px;
-				margin-bottom: 10px;
-			}
-			button {
-				padding: 8px 15px;
-			}
-		</style>
-	</head>
-	<body>
-		<div class="contenedor">
-			<h2>Analizador TLS (SSL Labs)</h2>
-			<form action="/analizar" method="post">
-				<input type="text" name="dominio" placeholder="ejemplo.com" required>
-				<button type="submit">Analizar</button>
-			</form>
-		</div>
-	</body>
-	</html>
-	`
-	fmt.Fprint(w, html)
+func mostrarFormulario(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "index.html")
 }
 
 func analizarDominio(w http.ResponseWriter, r *http.Request) {
@@ -85,73 +45,19 @@ func analizarDominio(w http.ResponseWriter, r *http.Request) {
 	var respuesta Respuesta
 	json.NewDecoder(resp.Body).Decode(&respuesta)
 
-	fmt.Fprint(w, `
-	<!DOCTYPE html>
-	<html>
-	<head>
-		<meta charset="UTF-8">
-		<title>Resultado TLS</title>
-		<style>
-			body {
-				font-family: Arial, sans-serif;
-				background-color: #f4f4f4;
-				padding: 40px;
-			}
-			.contenedor {
-				background: white;
-				padding: 20px;
-				max-width: 700px;
-				margin: auto;
-				border-radius: 5px;
-			}
-			table {
-				border-collapse: collapse;
-				width: 100%;
-				margin-top: 15px;
-			}
-			th, td {
-				border: 1px solid #ccc;
-				padding: 8px;
-				text-align: left;
-			}
-			th {
-				background-color: #eee;
-			}
-			a {
-				display: inline-block;
-				margin-top: 15px;
-			}
-		</style>
-	</head>
-	<body>
-		<div class="contenedor">
-	`)
-
-	fmt.Fprintf(w, "<h2>Resultado para %s</h2>", dominio)
+	fmt.Fprint(w, "<h2>Resultado</h2>")
+	fmt.Fprintf(w, "<p><b>Dominio:</b> %s</p>", dominio)
 	fmt.Fprintf(w, "<p><b>Estado:</b> %s</p>", respuesta.Estado)
 
-	fmt.Fprint(w, `
-	<table>
-		<tr>
-			<th>IP</th>
-			<th>Nota TLS</th>
-		</tr>
-	`)
+	fmt.Fprint(w, "<table border='1'>")
+	fmt.Fprint(w, "<tr><th>IP</th><th>Nota TLS</th></tr>")
 
 	for _, servidor := range respuesta.Servidores {
-		fmt.Fprintf(w, `
-		<tr>
-			<td>%s</td>
-			<td>%s</td>
-		</tr>
-		`, servidor.IP, servidor.Nota)
+		fmt.Fprintf(w,
+			"<tr><td>%s</td><td>%s</td></tr>",
+			servidor.IP, servidor.Nota)
 	}
 
-	fmt.Fprint(w, `
-	</table>
-	<a href="/">Nueva consulta</a>
-	</div>
-	</body>
-	</html>
-	`)
+	fmt.Fprint(w, "</table>")
+	fmt.Fprint(w, "<br><a href='/'>Volver</a>")
 }

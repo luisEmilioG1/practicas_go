@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Analizador TLS</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f4f4f4;
+			padding: 40px;
+		}
+		.contenedor {
+			background: white;
+			padding: 20px;
+			max-width: 500px;
+			margin: auto;
+			border-radius: 5px;
+		}
+		input {
+			width: 100%;
+			padding: 8px;
+			margin-bottom: 10px;
+		}
+		button {
+			padding: 8px 15px;
+		}
+	</style>
+</head>
+<body>
+	<div class="contenedor">
+		<h2>Analizador TLS (SSL Labs)</h2>
+
+		<form action="/analizar" method="post">
+			<input type="text" name="dominio" placeholder="ejemplo.com" required>
+			<button type="submit">Analizar</button>
+		</form>
+	</div>
+</body>
+</html>
