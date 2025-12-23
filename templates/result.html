@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Analysis Results</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f4f4f4;
+			padding: 40px;
+			margin: 0;
+		}
+		.container {
+			background: white;
+			padding: 30px;
+			max-width: 800px;
+			margin: 0 auto;
+			border-radius: 8px;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+		}
+		h2 {
+			margin-top: 0;
+			color: #333;
+		}
+		.summary {
+			background-color: #f8f9fa;
+			padding: 20px;
+			border-radius: 4px;
+			margin-bottom: 20px;
+		}
+		.grade {
+			font-size: 2em;
+			font-weight: bold;
+			margin: 10px 0;
+		}
+		.grade-A { color: #28a745; }
+		.grade-B { color: #ffc107; }
+		.grade-C { color: #fd7e14; }
+		.grade-D, .grade-E, .grade-F { color: #dc3545; }
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin: 20px 0;
+		}
+		th, td {
+			padding: 12px;
+			text-align: left;
+			border-bottom: 1px solid #ddd;
+		}
+		th {
+			background-color: #f8f9fa;
+			font-weight: bold;
+		}
+		.recommendations {
+			background-color: #e7f3ff;
+			padding: 15px;
+			border-radius: 4px;
+			margin-top: 20px;
+		}
+		.recommendations ul {
+			margin: 10px 0;
+			padding-left: 20px;
+		}
+		.recommendations li {
+			margin: 5px 0;
+		}
+		.warning {
+			color: #856404;
+			background-color: #fff3cd;
+			padding: 10px;
+			border-radius: 4px;
+			margin: 10px 0;
+		}
+		.exceptional {
+			color: #155724;
+			background-color: #d4edda;
+			padding: 10px;
+			border-radius: 4px;
+			margin: 10px 0;
+		}
+		.back-link {
+			display: inline-block;
+			margin-top: 20px;
+			color: #007bff;
+			text-decoration: none;
+		}
+		.back-link:hover {
+			text-decoration: underline;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h2>TLS Security Analysis Results</h2>
+		
+		<div class="summary">
+			<p><strong>Domain:</strong> {{.Domain}}</p>
+			<p><strong>Overall Grade:</strong> <span class="grade grade-{{.OverallGrade}}">{{.OverallGrade}}</span></p>
+			{{if .IsExceptional}}
+			<div class="exceptional">✓ This domain has exceptional TLS configuration</div>
+			{{end}}
+			{{if .HasWarnings}}
+			<div class="warning">⚠ Some endpoints have security warnings</div>
+			{{end}}
+		</div>
+
+		<h3>Endpoint Details</h3>
+		<table>
+			<thead>
+				<tr>
+					<th>IP Address</th>
+					<th>Grade</th>
+					<th>Protocols</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range .Endpoints}}
+				<tr>
+					<td>{{.IPAddress}}</td>
+					<td><span class="grade grade-{{.Grade}}">{{.Grade}}</span></td>
+					<td>{{range $index, $protocol := .Protocols}}{{if $index}}, {{end}}{{$protocol}}{{end}}</td>
+					<td>
+						{{if .IsExceptional}}✓ Exceptional{{else if .HasWarnings}}⚠ Warnings{{else}}✓ OK{{end}}
+					</td>
+				</tr>
+				{{end}}
+			</tbody>
+		</table>
+
+		<div class="recommendations">
+			<h3>Recommendations</h3>
+			<ul>
+				{{range .Recommendations}}
+				<li>{{.}}</li>
+				{{end}}
+			</ul>
+		</div>
+
+		<a href="/" class="back-link">← Analyze Another Domain</a>
+	</div>
+</body>
+</html>
+

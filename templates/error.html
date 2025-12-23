@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Error</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f4f4f4;
+			padding: 40px;
+			margin: 0;
+		}
+		.container {
+			background: white;
+			padding: 30px;
+			max-width: 500px;
+			margin: 0 auto;
+			border-radius: 8px;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+		}
+		.error {
+			color: #dc3545;
+			background-color: #f8d7da;
+			padding: 15px;
+			border-radius: 4px;
+			margin: 20px 0;
+		}
+		.back-link {
+			display: inline-block;
+			margin-top: 20px;
+			color: #007bff;
+			text-decoration: none;
+		}
+		.back-link:hover {
+			text-decoration: underline;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h2>Error</h2>
+		<div class="error">
+			{{.Error}}
+		</div>
+		<a href="/" class="back-link">← Go Back</a>
+	</div>
+</body>
+</html>
